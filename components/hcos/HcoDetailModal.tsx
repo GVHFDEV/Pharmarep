@@ -56,7 +56,6 @@ function HcoDetailContent({
           {hco.category && <p className="text-sm text-text-secondary mt-0.5">{hco.category}</p>}
           <div className="flex flex-wrap gap-1.5 mt-2">
             {pot && <Badge variant={pot.variant}>{pot.label}</Badge>}
-            {hco.contact_person && <Badge variant="neutral">{hco.contact_person}</Badge>}
           </div>
         </div>
       </div>
@@ -67,14 +66,20 @@ function HcoDetailContent({
       <div>
         <p className="text-[11px] font-bold uppercase tracking-widest text-text-muted mb-3">Identificação</p>
         <div className="space-y-2.5">
-          <InfoRow icon={<Building2 className="w-4 h-4" />} label="CRF" value={hco.crf} />
           {hco.cnpj && <InfoRow icon={<Building2 className="w-4 h-4" />} label="CNPJ" value={formatCNPJ(hco.cnpj)} />}
-          {hco.contact_person && <InfoRow icon={<User className="w-4 h-4" />} label="Contato" value={hco.contact_person} />}
+          {hco.pharmacists && hco.pharmacists.length > 0 && (
+            <div className="mt-2">
+              <p className="text-xs text-text-muted mb-1">Farmacêuticos:</p>
+              {hco.pharmacists.map((p, i) => (
+                <InfoRow key={i} icon={<User className="w-4 h-4" />} label={p.crf} value={p.name} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Contact */}
-      {(hco.email || hco.phone || hco.whatsapp) && (
+      {(hco.email || hco.phone || hco.whatsapp || hco.whatsapp2) && (
         <>
           <div className="border-t border-border" />
           <div>
@@ -83,6 +88,7 @@ function HcoDetailContent({
               {hco.email && <InfoRow icon={<Mail className="w-4 h-4" />} label="Email" value={hco.email} />}
               {hco.phone && <InfoRow icon={<Phone className="w-4 h-4" />} label="Telefone" value={formatPhone(hco.phone)} />}
               {hco.whatsapp && <InfoRow icon={<Phone className="w-4 h-4" />} label="WhatsApp" value={formatPhone(hco.whatsapp)} />}
+              {hco.whatsapp2 && <InfoRow icon={<Phone className="w-4 h-4" />} label="WhatsApp 2" value={formatPhone(hco.whatsapp2)} />}
             </div>
           </div>
         </>
@@ -179,11 +185,11 @@ export function HcoDetailModal({ hcoId, open, onClose, onUpdated }: HcoDetailMod
 
     const { error } = await supabase.from('hcos').update({
       name: data.name,
-      crf: data.crf,
       cnpj: data.cnpj || null,
       email: data.email || null,
       phone: data.phone || null,
       whatsapp: data.whatsapp || null,
+      whatsapp2: data.whatsapp2 || null,
       address: data.address || null,
       address_number: (data as typeof data & { address_number?: string }).address_number || null,
       city: data.city || null,
@@ -192,7 +198,7 @@ export function HcoDetailModal({ hcoId, open, onClose, onUpdated }: HcoDetailMod
       neighborhood: data.neighborhood || null,
       latitude: data.latitude ?? null,
       longitude: data.longitude ?? null,
-      contact_person: data.contact_person || null,
+      pharmacists: data.pharmacists && data.pharmacists.length > 0 ? data.pharmacists : null,
       category: data.category || null,
       potential: data.potential ? parseInt(data.potential) : null,
       notes: data.notes || null,
@@ -200,7 +206,7 @@ export function HcoDetailModal({ hcoId, open, onClose, onUpdated }: HcoDetailMod
 
     setLoading(false)
     if (error) {
-      toast.error(error.code === '23505' ? 'CRF já cadastrado para outra farmácia' : 'Erro ao atualizar. Tente novamente.')
+      toast.error(error.code === '23505' ? 'CNPJ já cadastrado para outra farmácia' : 'Erro ao atualizar. Tente novamente.')
       return
     }
     toast.success('HCO atualizado com sucesso!')
@@ -227,11 +233,11 @@ export function HcoDetailModal({ hcoId, open, onClose, onUpdated }: HcoDetailMod
 
   const formDefaults = hco ? {
     name: hco.name,
-    crf: hco.crf,
     cnpj: hco.cnpj || '',
     email: hco.email || '',
     phone: hco.phone || '',
     whatsapp: hco.whatsapp || '',
+    whatsapp2: hco.whatsapp2 || '',
     address: hco.address || '',
     address_number: hco.address_number || '',
     city: hco.city || '',
@@ -240,7 +246,7 @@ export function HcoDetailModal({ hcoId, open, onClose, onUpdated }: HcoDetailMod
     neighborhood: hco.neighborhood || '',
     latitude: hco.latitude ?? null,
     longitude: hco.longitude ?? null,
-    contact_person: hco.contact_person || '',
+    pharmacists: hco.pharmacists || [],
     category: hco.category || '',
     potential: hco.potential?.toString() || '',
     notes: hco.notes || '',

@@ -25,8 +25,10 @@ export const hcpSchema = z.object({
   longitude: z.number().nullable().optional(),
   notes: z.string().optional().or(z.literal('')),
   weekdays: z.array(z.string()).optional(),
-  office_hours_start: z.string().optional().or(z.literal('')),
-  office_hours_end: z.string().optional().or(z.literal('')),
+  schedule: z.record(z.string(), z.object({
+    start: z.string().optional().or(z.literal('')),
+    end: z.string().optional().or(z.literal('')),
+  })).optional(),
 })
 
 export type HcpFormData = z.infer<typeof hcpSchema>

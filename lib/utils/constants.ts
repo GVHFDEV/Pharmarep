@@ -1,9 +1,10 @@
 export const ADOPTION_CURVES = [
-  'Inovador',
-  'Early Adopter',
-  'Maioria Inicial',
-  'Maioria Tardia',
-  'Retardatário',
+  'Ciente',
+  'Interessado',
+  'Avaliando',
+  'Prescrevendo',
+  'Preferindo',
+  'Influenciador',
 ] as const
 
 export const PIPELINE_STAGES = [
@@ -35,7 +36,11 @@ export const SPECIALTIES = [
   'Dermatologista',
   'Endocrinologista',
   'Gastroenterologista',
+  'Geriatra',
   'Ginecologista',
+  'Hematologista',
+  'Médico Saúde da Família',
+  'Nefrologista',
   'Neurologista',
   'Oftalmologista',
   'Ortopedista',
@@ -70,7 +75,6 @@ export const WEEKDAYS = [
   { value: 'qua', short: 'Qua', label: 'Quarta' },
   { value: 'qui', short: 'Qui', label: 'Quinta' },
   { value: 'sex', short: 'Sex', label: 'Sexta' },
-  { value: 'sab', short: 'Sáb', label: 'Sábado' },
 ] as const
 
 export const VISIT_CHANNELS = [

@@ -53,8 +53,7 @@ export function HcpCreateModal({ open, onClose, onCreated }: HcpCreateModalProps
       longitude: data.longitude || null,
       notes: data.notes || null,
       weekdays: data.weekdays && data.weekdays.length > 0 ? data.weekdays : null,
-      office_hours_start: data.office_hours_start || null,
-      office_hours_end: data.office_hours_end || null,
+      schedule: data.schedule && Object.keys(data.schedule).length > 0 ? data.schedule : null,
     })
 
     setLoading(false)

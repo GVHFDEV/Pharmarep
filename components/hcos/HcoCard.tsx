@@ -39,16 +39,16 @@ export function HcoCard({ hco, onClick }: HcoCardProps) {
         </div>
       </div>
 
-      {/* CRF */}
-      <p className="text-xs text-text-muted font-mono">CRF: {hco.crf}</p>
+      {/* CNPJ */}
+      {hco.cnpj && <p className="text-xs text-text-muted font-mono">CNPJ: {hco.cnpj}</p>}
 
       {/* Badges */}
       <div className="flex flex-wrap gap-1.5">
         {pot && <Badge variant={pot.variant}>{pot.label}</Badge>}
         {hco.category && <Badge variant="neutral">{hco.category}</Badge>}
-        {hco.contact_person && (
+        {hco.pharmacists && hco.pharmacists.length > 0 && (
           <Badge variant="neutral" className="max-w-[140px] truncate">
-            {hco.contact_person}
+            {hco.pharmacists.length} farmacêutico{hco.pharmacists.length > 1 ? 's' : ''}
           </Badge>
         )}
       </div>

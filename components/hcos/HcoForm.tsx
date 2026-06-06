@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
+import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { hcoSchema, type HcoFormData } from '@/lib/validations/hco'
 import { Input } from '@/components/ui/Input'
@@ -24,16 +24,17 @@ export function HcoForm({ defaultValues, onSubmit, loading }: HcoFormProps) {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<HcoFormData>({
     resolver: zodResolver(hcoSchema),
     defaultValues: {
       name: '',
-      crf: '',
       cnpj: '',
       email: '',
       phone: '',
       whatsapp: '',
+      whatsapp2: '',
       address: '',
       address_number: '',
       city: '',
@@ -42,7 +43,7 @@ export function HcoForm({ defaultValues, onSubmit, loading }: HcoFormProps) {
       neighborhood: '',
       latitude: null,
       longitude: null,
-      contact_person: '',
+      pharmacists: [],
       category: '',
       potential: '',
       notes: '',
@@ -51,14 +52,20 @@ export function HcoForm({ defaultValues, onSubmit, loading }: HcoFormProps) {
   })
 
   const potential = watch('potential')
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'pharmacists',
+  })
   const cnpjValue = watch('cnpj') || ''
   const phoneValue = watch('phone') || ''
   const whatsappValue = watch('whatsapp') || ''
+  const whatsapp2Value = watch('whatsapp2') || ''
 
   const handleCNPJChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue('cnpj', e.target.value.replace(/\D/g, '').slice(0, 14), { shouldValidate: true })
   }
-  const handlePhoneChange = (field: 'phone' | 'whatsapp') =>
+  const handlePhoneChange = (field: 'phone' | 'whatsapp' | 'whatsapp2') =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setValue(field, e.target.value.replace(/\D/g, '').slice(0, 11), { shouldValidate: true })
     }
@@ -86,10 +93,54 @@ export function HcoForm({ defaultValues, onSubmit, loading }: HcoFormProps) {
             <Input label="Nome da Farmácia *" id="name" error={errors.name?.message} disabled={loading} {...register('name')} />
           </div>
           <div className="col-span-2 sm:col-span-1">
-            <Input label="CRF *" id="crf" error={errors.crf?.message} disabled={loading} {...register('crf')} />
+            <Input label="CNPJ" id="cnpj" value={cnpjValue ? formatCNPJ(cnpjValue) : ''} onChange={handleCNPJChange} error={errors.cnpj?.message} disabled={loading} placeholder="00.000.000/0000-00" />
           </div>
-          <Input label="CNPJ" id="cnpj" value={cnpjValue ? formatCNPJ(cnpjValue) : ''} onChange={handleCNPJChange} error={errors.cnpj?.message} disabled={loading} placeholder="00.000.000/0000-00" />
-          <Input label="Pessoa de Contato" id="contact_person" disabled={loading} {...register('contact_person')} />
+        </div>
+      </div>
+
+      {/* ── Farmacêuticos ── */}
+      <div>
+        <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Farmacêuticos</p>
+        <div className="space-y-2">
+          {fields.map((field, index) => (
+            <div key={field.id} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-start">
+              <Input
+                label={index === 0 ? 'Nome' : ''}
+                id={`pharmacists.${index}.name`}
+                error={errors.pharmacists?.[index]?.name?.message}
+                disabled={loading}
+                placeholder="Nome do farmacêutico"
+                {...register(`pharmacists.${index}.name`)}
+              />
+              <Input
+                label={index === 0 ? 'CRF' : ''}
+                id={`pharmacists.${index}.crf`}
+                error={errors.pharmacists?.[index]?.crf?.message}
+                disabled={loading}
+                placeholder="CRF"
+                {...register(`pharmacists.${index}.crf`)}
+              />
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => remove(index)}
+                className={cn(
+                  'text-danger hover:text-danger/80 text-sm font-medium px-2 py-1.5 rounded transition-colors',
+                  index === 0 ? 'mt-6' : 'mt-0'
+                )}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => append({ name: '', crf: '' })}
+            className="text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+          >
+            + Adicionar farmacêutico
+          </button>
         </div>
       </div>
 
@@ -100,6 +151,7 @@ export function HcoForm({ defaultValues, onSubmit, loading }: HcoFormProps) {
           <Input label="Email" id="email" type="email" error={errors.email?.message} disabled={loading} {...register('email')} />
           <Input label="Telefone" id="phone" value={phoneValue ? formatPhone(phoneValue) : ''} onChange={handlePhoneChange('phone')} error={errors.phone?.message} disabled={loading} placeholder="(00) 0000-0000" />
           <Input label="WhatsApp" id="whatsapp" value={whatsappValue ? formatPhone(whatsappValue) : ''} onChange={handlePhoneChange('whatsapp')} error={errors.whatsapp?.message} disabled={loading} placeholder="(00) 00000-0000" />
+          <Input label="WhatsApp 2" id="whatsapp2" value={whatsapp2Value ? formatPhone(whatsapp2Value) : ''} onChange={handlePhoneChange('whatsapp2')} disabled={loading} placeholder="(00) 00000-0000" />
         </div>
       </div>
 

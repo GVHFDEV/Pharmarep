@@ -97,7 +97,7 @@ function HcpDetailContent({
       </div>
 
       {/* Schedule */}
-      {(weekdayLabels && weekdayLabels.length > 0) || hcp.office_hours_start ? (
+      {(weekdayLabels && weekdayLabels.length > 0) || hcp.schedule ? (
         <>
           <div className="border-t border-border" />
           <div>
@@ -106,9 +106,12 @@ function HcpDetailContent({
               {weekdayLabels && weekdayLabels.length > 0 && (
                 <InfoRow icon={<Calendar className="w-4 h-4" />} label="Dias" value={weekdayLabels.join(', ')} />
               )}
-              {hcp.office_hours_start && (
-                <InfoRow icon={<Clock className="w-4 h-4" />} label="Horário" value={`${hcp.office_hours_start}${hcp.office_hours_end ? ` – ${hcp.office_hours_end}` : ''}`} />
-              )}
+              {hcp.schedule && Object.entries(hcp.schedule).map(([day, times]) => {
+                const dayLabel = WEEKDAYS.find(w => w.value === day)?.short || day
+                return (
+                  <InfoRow key={day} icon={<Clock className="w-4 h-4" />} label={dayLabel} value={`${times.start} – ${times.end}`} />
+                )
+              })}
             </div>
           </div>
         </>
@@ -252,8 +255,7 @@ export function HcpDetailModal({ hcpId, open, onClose, onUpdated }: HcpDetailMod
       longitude: data.longitude ?? null,
       notes: data.notes || null,
       weekdays: data.weekdays && data.weekdays.length > 0 ? data.weekdays : null,
-      office_hours_start: data.office_hours_start || null,
-      office_hours_end: data.office_hours_end || null,
+      schedule: data.schedule && Object.keys(data.schedule).length > 0 ? data.schedule : null,
     }).eq('id', hcpId)
 
     setLoading(false)
@@ -304,8 +306,7 @@ export function HcpDetailModal({ hcpId, open, onClose, onUpdated }: HcpDetailMod
     longitude: hcp.longitude ?? null,
     notes: hcp.notes || '',
     weekdays: hcp.weekdays || [],
-    office_hours_start: hcp.office_hours_start || '',
-    office_hours_end: hcp.office_hours_end || '',
+    schedule: hcp.schedule || {},
   } : undefined
 
   const loadingContent = (

@@ -21,7 +21,7 @@ export interface HCP {
   specialty: string;
   category: string | null;
   potential: 1 | 2 | 3 | 4 | 5 | 6 | null;
-  adoption_curve: 'Inovador' | 'Early Adopter' | 'Maioria Inicial' | 'Maioria Tardia' | 'Retardatário' | null;
+  adoption_curve: 'Ciente' | 'Interessado' | 'Avaliando' | 'Prescrevendo' | 'Preferindo' | 'Influenciador' | null;
   clinic_name: string | null;
   clinic_address: string | null;
   clinic_address_number: string | null;
@@ -32,8 +32,7 @@ export interface HCP {
   longitude: number | null;
   notes: string | null;
   weekdays: string[] | null;
-  office_hours_start: string | null;
-  office_hours_end: string | null;
+  schedule: Record<string, { start: string; end: string }> | null;
   active: boolean;
   created_at: string;
   updated_at: string;
@@ -102,11 +101,11 @@ export interface HCO {
   id: string;
   user_id: string;
   name: string;
-  crf: string;
   cnpj: string | null;
   email: string | null;
   phone: string | null;
   whatsapp: string | null;
+  whatsapp2: string | null;
   address: string | null;
   address_number: string | null;
   city: string | null;
@@ -115,7 +114,7 @@ export interface HCO {
   neighborhood: string | null;
   latitude: number | null;
   longitude: number | null;
-  contact_person: string | null;
+  pharmacists: Array<{ name: string; crf: string }> | null;
   category: string | null;
   potential: 1 | 2 | 3 | null;
   notes: string | null;

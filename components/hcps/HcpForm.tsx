@@ -48,8 +48,7 @@ export function HcpForm({ defaultValues, onSubmit, loading }: HcpFormProps) {
       longitude: null,
       notes: '',
       weekdays: [],
-      office_hours_start: '',
-      office_hours_end: '',
+      schedule: {},
       ...defaultValues,
     },
   })
@@ -57,6 +56,7 @@ export function HcpForm({ defaultValues, onSubmit, loading }: HcpFormProps) {
   const potential = watch('potential')
   const category = watch('category')
   const weekdays = watch('weekdays') || []
+  const schedule = watch('schedule') || {}
   const cpfValue = watch('cpf') || ''
   const mobileValue = watch('mobile_phone') || ''
   const landlineValue = watch('landline_phone') || ''
@@ -192,23 +192,40 @@ export function HcpForm({ defaultValues, onSubmit, loading }: HcpFormProps) {
             </div>
           </div>
 
-          {/* Time range */}
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Horário início"
-              id="office_hours_start"
-              type="time"
-              disabled={loading}
-              {...register('office_hours_start')}
-            />
-            <Input
-              label="Horário fim"
-              id="office_hours_end"
-              type="time"
-              disabled={loading}
-              {...register('office_hours_end')}
-            />
-          </div>
+          {/* Per-day time ranges */}
+          {weekdays.length > 0 && (
+            <div className="space-y-2">
+              {WEEKDAYS.filter(day => weekdays.includes(day.value)).map((day) => (
+                <div key={day.value} className="grid grid-cols-[80px_1fr_1fr] gap-2 items-center">
+                  <span className="text-xs font-medium text-text-secondary">{day.label}</span>
+                  <Input
+                    label=""
+                    id={`schedule_${day.value}_start`}
+                    type="time"
+                    disabled={loading}
+                    value={schedule[day.value]?.start || ''}
+                    onChange={(e) => {
+                      const current = schedule[day.value] || { start: '', end: '' }
+                      setValue('schedule', { ...schedule, [day.value]: { ...current, start: e.target.value } })
+                    }}
+                    placeholder="Início"
+                  />
+                  <Input
+                    label=""
+                    id={`schedule_${day.value}_end`}
+                    type="time"
+                    disabled={loading}
+                    value={schedule[day.value]?.end || ''}
+                    onChange={(e) => {
+                      const current = schedule[day.value] || { start: '', end: '' }
+                      setValue('schedule', { ...schedule, [day.value]: { ...current, end: e.target.value } })
+                    }}
+                    placeholder="Fim"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

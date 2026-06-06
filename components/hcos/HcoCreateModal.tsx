@@ -34,11 +34,11 @@ export function HcoCreateModal({ open, onClose, onCreated }: HcoCreateModalProps
     const { error } = await supabase.from('hcos').insert({
       user_id: user.id,
       name: data.name,
-      crf: data.crf,
       cnpj: data.cnpj || null,
       email: data.email || null,
       phone: data.phone || null,
       whatsapp: data.whatsapp || null,
+      whatsapp2: data.whatsapp2 || null,
       address: data.address || null,
       address_number: data.address_number || null,
       city: data.city || null,
@@ -47,7 +47,7 @@ export function HcoCreateModal({ open, onClose, onCreated }: HcoCreateModalProps
       neighborhood: data.neighborhood || null,
       latitude: data.latitude || null,
       longitude: data.longitude || null,
-      contact_person: data.contact_person || null,
+      pharmacists: data.pharmacists && data.pharmacists.length > 0 ? data.pharmacists : null,
       category: data.category || null,
       potential: data.potential ? parseInt(data.potential) : null,
       notes: data.notes || null,
@@ -57,7 +57,7 @@ export function HcoCreateModal({ open, onClose, onCreated }: HcoCreateModalProps
 
     if (error) {
       if (error.code === '23505') {
-        toast.error('CRF já cadastrado para outra farmácia')
+        toast.error('CNPJ já cadastrado para outra farmácia')
       } else {
         toast.error('Erro ao cadastrar HCO. Tente novamente.')
       }
