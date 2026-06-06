@@ -113,3 +113,22 @@ body {
   background: transparent !important;
   border: none !important;
 }
+
+/* PWA safe areas for iPad/iPhone */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Prevent text selection on touch targets */
+nav a, nav button, button[type="button"] {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* Standalone PWA - hide browser UI artifacts */
+@media (display-mode: standalone) {
+  body {
+    overscroll-behavior-y: none;
+  }
+}

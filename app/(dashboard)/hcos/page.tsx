@@ -27,7 +27,7 @@ export default function HcosPage() {
       <button
         type="button"
         onClick={() => setShowModal(true)}
-        className="fixed bottom-20 md:bottom-6 right-6 w-14 h-14 bg-accent hover:bg-accent-hover text-text-on-accent rounded-full shadow-lg flex items-center justify-center transition-all duration-200 active:scale-95 z-10"
+        className="fixed bottom-28 xl:bottom-6 right-6 w-14 h-14 bg-accent hover:bg-accent-hover text-text-on-accent rounded-full shadow-lg flex items-center justify-center transition-all duration-200 active:scale-95 z-10"
         aria-label="Nova Farmácia"
       >
         <Plus className="w-6 h-6" />

@@ -14,6 +14,7 @@ import Link from 'next/link'
 interface DashboardChartsProps {
   recentVisits: Array<{ scheduled_at: string; status: string }>
   hcpPotentials: Array<{ potential: number | null }>
+  hcpSpecialties: Array<{ id: string; specialty: string }>
   topHcps: Array<{ hcp_id: string; hcps: { name: string } | null }>
   topProducts: Array<{ product_id: string; products: { name: string } | null; samples_delivered: number }>
 }
@@ -46,7 +47,7 @@ function SectionCard({ children, className }: { children: React.ReactNode; class
   )
 }
 
-export function DashboardCharts({ recentVisits, hcpPotentials, topHcps, topProducts }: DashboardChartsProps) {
+export function DashboardCharts({ recentVisits, hcpPotentials, hcpSpecialties, topHcps, topProducts }: DashboardChartsProps) {
   const now = new Date()
 
   // Weekly visits for area chart
@@ -91,6 +92,20 @@ export function DashboardCharts({ recentVisits, hcpPotentials, topHcps, topProdu
     productCounts[vp.product_id].count += vp.samples_delivered
   }
   const topProductList = Object.values(productCounts).sort((a, b) => b.count - a.count).slice(0, 3)
+
+  // Specialty distribution + visits per specialty
+  const specialtyCounts: Record<string, { count: number; visits: number }> = {}
+  for (const hcp of hcpSpecialties) {
+    if (!specialtyCounts[hcp.specialty]) specialtyCounts[hcp.specialty] = { count: 0, visits: 0 }
+    specialtyCounts[hcp.specialty].count++
+    // Count visits for this HCP
+    const hcpVisits = topHcps.filter(v => v.hcp_id === hcp.id).length
+    specialtyCounts[hcp.specialty].visits += hcpVisits
+  }
+  const specialtyData = Object.entries(specialtyCounts)
+    .map(([name, data]) => ({ name, hcps: data.count, visitas: data.visits }))
+    .sort((a, b) => b.hcps - a.hcps)
+    .slice(0, 6)
 
   // Total visits for the area chart header
   const totalVisits = weeklyData.reduce((s, w) => s + w.total, 0)
@@ -191,6 +206,37 @@ export function DashboardCharts({ recentVisits, hcpPotentials, topHcps, topProdu
                 </motion.div>
               ))}
             </div>
+          )}
+        </SectionCard>
+
+        {/* Specialty chart — HCPs by specialty + visits */}
+        <SectionCard>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-text-muted">HCPs por Especialidade</p>
+            <div className="flex gap-4 text-xs text-text-muted">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-accent inline-block" />
+                HCPs
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-brand-green inline-block" />
+                Visitas
+              </div>
+            </div>
+          </div>
+          {specialtyData.length === 0 ? (
+            <p className="text-sm text-text-muted text-center py-6">Nenhum HCP cadastrado</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={specialtyData} margin={{ top: 0, right: 0, bottom: 0, left: -20 }} barSize={16}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#dde3ea" vertical={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} interval={0} angle={-20} textAnchor="end" height={50} />
+                <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} allowDecimals={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="hcps" fill="#08312a" radius={[4, 4, 0, 0]} name="HCPs" />
+                <Bar dataKey="visitas" fill="#00e47c" radius={[4, 4, 0, 0]} name="Visitas" />
+              </BarChart>
+            </ResponsiveContainer>
           )}
         </SectionCard>
       </div>

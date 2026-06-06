@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function MapPage() {
   return (
-    <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-2rem)]" suppressHydrationWarning>
+    <div className="h-[calc(100vh-10rem)] xl:h-[calc(100vh-7rem)]" suppressHydrationWarning>
       <MapClient />
     </div>
   )

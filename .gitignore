@@ -45,3 +45,12 @@ next-env.d.ts
 
 #supabase
 .supabase/
+supabase/
+
+# AI/Agent files
+AGENTS.md
+CLAUDE.md
+.cursor/
+.windsurf/
+.aider*
+.copilot/

@@ -37,6 +37,12 @@ export default async function DashboardPage() {
     .select('potential')
     .eq('active', true)
 
+  // Fetch HCP specialties for chart
+  const { data: hcpSpecialties } = await supabase
+    .from('hcps')
+    .select('id, specialty')
+    .eq('active', true)
+
   // Top 5 most visited HCPs this month
   const { data: topHcps } = await supabase
     .from('visits')
@@ -64,6 +70,7 @@ export default async function DashboardPage() {
       <DashboardCharts
         recentVisits={recentVisits ?? []}
         hcpPotentials={hcpPotentials ?? []}
+        hcpSpecialties={(hcpSpecialties ?? []) as Array<{ id: string; specialty: string }>}
         topHcps={(topHcps ?? []) as unknown as Array<{ hcp_id: string; hcps: { name: string } | null }>}
         topProducts={(topProducts ?? []) as unknown as Array<{ product_id: string; products: { name: string } | null; samples_delivered: number }>}
       />

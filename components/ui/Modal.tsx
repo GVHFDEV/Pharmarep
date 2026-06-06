@@ -9,7 +9,7 @@ interface ModalProps {
   open: boolean
   onClose: () => void
   title: string
-  size?: "sm" | "md" | "lg"
+  size?: "sm" | "md" | "lg" | "xl"
   children: React.ReactNode
   /** If true, content area becomes scrollable with a max height */
   scrollable?: boolean
@@ -19,6 +19,7 @@ const sizeMap = {
   sm: "max-w-[420px]",
   md: "max-w-[560px]",
   lg: "max-w-[680px]",
+  xl: "max-w-[820px]",
 }
 
 export function Modal({ open, onClose, title, size = "md", children, scrollable = false }: ModalProps) {

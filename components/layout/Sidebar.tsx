@@ -52,7 +52,7 @@ function NavItem({ href, label, icon: Icon, active }: {
         />
       )}
       <Icon className="w-[18px] h-[18px] shrink-0" />
-      <span className="hidden lg:block group-hover:block whitespace-nowrap overflow-hidden">
+      <span className="hidden 2xl:block group-hover:block whitespace-nowrap overflow-hidden">
         {label}
       </span>
     </Link>
@@ -64,7 +64,7 @@ export default function Sidebar({ user: _user }: { user: { full_name: string; av
   const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href)
 
   return (
-    <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:z-30 md:w-[72px] lg:w-[260px] bg-accent border-r border-white/10 shadow-sm transition-all duration-200 group hover:w-[260px]">
+    <aside className="hidden xl:flex xl:flex-col xl:fixed xl:inset-y-0 xl:left-0 xl:z-30 xl:w-[72px] 2xl:w-[260px] bg-accent border-r border-white/10 shadow-sm transition-all duration-200 group hover:w-[260px]">
 
       {/* Logo */}
       <div className="flex items-center justify-center h-20 px-4 py-3 border-b border-white/10 shrink-0">
@@ -72,11 +72,11 @@ export default function Sidebar({ user: _user }: { user: { full_name: string; av
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-4 px-2 lg:px-3 group-hover:px-3 overflow-y-auto">
+      <nav className="flex-1 py-4 px-2 2xl:px-3 group-hover:px-3 overflow-y-auto">
 
         {/* PRINCIPAL */}
         <div className="mb-5">
-          <p className="hidden lg:block group-hover:block px-3 mb-2 text-[10px] font-bold text-white/40 tracking-[0.12em] uppercase">
+          <p className="hidden 2xl:block group-hover:block px-3 mb-2 text-[10px] font-bold text-white/40 tracking-[0.12em] uppercase">
             Principal
           </p>
           <div className="space-y-0.5">
@@ -91,7 +91,7 @@ export default function Sidebar({ user: _user }: { user: { full_name: string; av
 
         {/* FERRAMENTAS */}
         <div>
-          <p className="hidden lg:block group-hover:block px-3 mb-2 text-[10px] font-bold text-white/40 tracking-[0.12em] uppercase">
+          <p className="hidden 2xl:block group-hover:block px-3 mb-2 text-[10px] font-bold text-white/40 tracking-[0.12em] uppercase">
             Ferramentas
           </p>
           <div className="space-y-0.5">
@@ -103,7 +103,7 @@ export default function Sidebar({ user: _user }: { user: { full_name: string; av
       </nav>
 
       {/* Settings at bottom */}
-      <div className="border-t border-white/10 p-2 lg:p-3 group-hover:p-3 shrink-0">
+      <div className="border-t border-white/10 p-2 2xl:p-3 group-hover:p-3 shrink-0">
         <NavItem href="/settings" label="Configurações" icon={Settings} active={isActive('/settings')} />
       </div>
     </aside>

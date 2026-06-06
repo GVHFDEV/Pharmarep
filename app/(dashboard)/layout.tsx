@@ -34,13 +34,17 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-screen">
+      {/* Sidebar: desktop only (xl+) */}
       <Sidebar user={userProfile} />
-      {/* md: offset matches collapsed sidebar (72px), lg: offset matches expanded sidebar (260px) */}
-      <div className="flex-1 flex flex-col min-h-screen md:ml-[72px] lg:ml-[260px]">
+
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col min-h-screen xl:ml-[72px] 2xl:ml-[260px]">
+        {/* Header: desktop only (xl+) */}
         <Header user={userProfile} />
-        <main className="flex-1 p-4 md:p-5 lg:p-8 pb-20 md:pb-5 bg-background overflow-y-auto">
+        <main className="flex-1 pt-10 px-4 pb-28 xl:pt-6 xl:px-8 xl:pb-5 bg-background overflow-y-auto">
           {children}
         </main>
+        {/* BottomNav: tablet + mobile only (hidden xl+) */}
         <BottomNav />
       </div>
     </div>

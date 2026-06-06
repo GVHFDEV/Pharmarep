@@ -95,7 +95,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           disabled={disabled}
           onClick={() => !disabled && setIsOpen(!isOpen)}
           className={cn(
-            'w-full rounded-lg border bg-surface px-3 py-2 text-sm text-left transition-colors appearance-none',
+            'w-full rounded-lg border bg-surface px-3 py-3 xl:py-2 text-base xl:text-sm text-left transition-colors appearance-none',
             'focus:border-border-focus focus:outline-none focus:ring-1 focus:ring-border-focus',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             error ? 'border-danger' : 'border-border',
@@ -121,7 +121,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 type="button"
                 onClick={() => handleSelect(opt.value)}
                 className={cn(
-                  'w-full text-left px-3 py-2 text-sm transition-colors',
+                  'w-full text-left px-3 py-3 xl:py-2 text-base xl:text-sm transition-colors',
                   'hover:bg-accent-light hover:text-accent',
                   opt.value === selectedValue
                     ? 'bg-accent-light text-accent font-medium'
