@@ -313,7 +313,7 @@ export function InventoryClient() {
                           <Button size="sm" variant="secondary" onClick={() => { setSelectedItem(item); setShowAddStock(true) }}>
                             <ArrowUpCircle className="w-3 h-3" /> Entrada
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => { setSelectedItem(item); setShowRemoveStock(true) }}>
+                          <Button size="sm" variant="danger" onClick={() => { setSelectedItem(item); setShowRemoveStock(true) }}>
                             <ArrowDownCircle className="w-3 h-3" /> Saída
                           </Button>
                           <Button size="sm" variant="ghost" onClick={() => { setSelectedItem(item); setNewMin(String(item.min_quantity)); setShowEditMin(true) }}>
@@ -361,7 +361,7 @@ export function InventoryClient() {
                   <Button size="sm" variant="secondary" className="flex-1" onClick={() => { setSelectedItem(item); setShowAddStock(true) }}>
                     <ArrowUpCircle className="w-3 h-3" /> Entrada
                   </Button>
-                  <Button size="sm" variant="ghost" className="flex-1" onClick={() => { setSelectedItem(item); setShowRemoveStock(true) }}>
+                  <Button size="sm" variant="danger" className="flex-1" onClick={() => { setSelectedItem(item); setShowRemoveStock(true) }}>
                     <ArrowDownCircle className="w-3 h-3" /> Saída
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => { setSelectedItem(item); setNewMin(String(item.min_quantity)); setShowEditMin(true) }}>

@@ -35,6 +35,7 @@ export function HcpCreateModal({ open, onClose, onCreated }: HcpCreateModalProps
       user_id: user.id,
       name: data.name,
       crm: data.crm,
+      active: data.active !== false,
       cpf: data.cpf || null,
       email: data.email || null,
       mobile_phone: data.mobile_phone || null,

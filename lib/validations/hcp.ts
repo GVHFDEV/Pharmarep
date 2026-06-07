@@ -3,6 +3,7 @@ import { z } from 'zod'
 export const hcpSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   crm: z.string().min(1, 'CRM é obrigatório'),
+  active: z.boolean().optional(),
   cpf: z
     .string()
     .refine((v) => v === '' || v.replace(/\D/g, '').length === 11, 'CPF deve ter 11 dígitos')

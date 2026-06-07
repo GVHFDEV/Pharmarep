@@ -317,7 +317,7 @@ export function DashboardCharts({ recentVisits, hcpPotentials, hcpSpecialties, t
         <SectionCard>
           <div className="flex items-center gap-2 mb-4">
             <Package className="w-4 h-4 text-accent" />
-            <p className="text-sm font-semibold text-text-primary">Produtos Propagandeados</p>
+            <p className="text-sm font-semibold text-text-primary">Produtos Propagados</p>
           </div>
           {topProductList.length === 0 ? (
             <p className="text-sm text-text-muted text-center py-4">Nenhum produto registrado</p>

@@ -30,6 +30,7 @@ export function HcpForm({ defaultValues, onSubmit, loading }: HcpFormProps) {
     defaultValues: {
       name: '',
       crm: '',
+      active: true,
       cpf: '',
       email: '',
       mobile_phone: '',
@@ -55,6 +56,7 @@ export function HcpForm({ defaultValues, onSubmit, loading }: HcpFormProps) {
 
   const potential = watch('potential')
   const category = watch('category')
+  const activeValue = watch('active')
   const weekdays = watch('weekdays') || []
   const schedule = watch('schedule') || {}
   const cpfValue = watch('cpf') || ''
@@ -107,6 +109,28 @@ export function HcpForm({ defaultValues, onSubmit, loading }: HcpFormProps) {
           <Input label="Celular" id="mobile_phone" value={mobileValue ? formatPhone(mobileValue) : ''} onChange={handlePhoneChange('mobile_phone')} error={errors.mobile_phone?.message} disabled={loading} placeholder="(00) 00000-0000" />
           <Input label="Tel. Fixo" id="landline_phone" value={landlineValue ? formatPhone(landlineValue) : ''} onChange={handlePhoneChange('landline_phone')} error={errors.landline_phone?.message} disabled={loading} placeholder="(00) 0000-0000" />
         </div>
+      </div>
+
+      {/* ── Status toggle ── */}
+      <div className="flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-3">
+        <div>
+          <p className="text-sm font-medium text-text-primary">Status</p>
+          <p className="text-xs text-text-muted">{activeValue !== false ? 'Ativo' : 'Inativo'}</p>
+        </div>
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => setValue('active', !activeValue)}
+          className={cn(
+            'relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50',
+            activeValue !== false ? 'bg-accent' : 'bg-gray-300'
+          )}
+        >
+          <span className={cn(
+            'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200',
+            activeValue !== false ? 'translate-x-5' : 'translate-x-0'
+          )} />
+        </button>
       </div>
 
       {/* ── Professional ── */}

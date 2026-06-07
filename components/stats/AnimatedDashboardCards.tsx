@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils/cn'
 
 export interface DashboardCardValues {
   totalHcps: number
+  inactiveHcps: number
   visitsThisMonth: number
   completedThisMonth: number
   pendingToday: number
@@ -16,9 +17,16 @@ const CARDS = [
   {
     key: 'totalHcps' as const,
     label: 'HCPs Ativos',
-    sub: 'Total cadastrados',
+    sub: 'Total ativos',
     icon: Users,
     accent: true,   // dark green card
+  },
+  {
+    key: 'inactiveHcps' as const,
+    label: 'HCPs Inativos',
+    sub: 'Total inativos',
+    icon: Users,
+    accent: false,
   },
   {
     key: 'visitsThisMonth' as const,
@@ -45,14 +53,15 @@ const CARDS = [
 
 export function AnimatedDashboardCards({
   totalHcps,
+  inactiveHcps,
   visitsThisMonth,
   completedThisMonth,
   pendingToday,
 }: DashboardCardValues) {
-  const values = { totalHcps, visitsThisMonth, completedThisMonth, pendingToday }
+  const values = { totalHcps, inactiveHcps, visitsThisMonth, completedThisMonth, pendingToday }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
       {CARDS.map((card, i) => {
         const Icon = card.icon
         const value = values[card.key]

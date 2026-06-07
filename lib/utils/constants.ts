@@ -78,12 +78,12 @@ export const WEEKDAYS = [
 ] as const
 
 export const VISIT_CHANNELS = [
-  { value: 'presencial', label: 'Presencial', emoji: '🏥' },
-  { value: 'virtual', label: 'Virtual', emoji: '💻' },
-  { value: 'telefone', label: 'Telefone', emoji: '📞' },
-  { value: 'whatsapp', label: 'WhatsApp', emoji: '💬' },
-  { value: 'email', label: 'Email', emoji: '📧' },
-  { value: 'outros', label: 'Outros', emoji: '📋' },
+  { value: 'presencial', label: 'Presencial', emoji: 'presencial' },
+  { value: 'virtual', label: 'Virtual', emoji: 'virtual' },
+  { value: 'telefone', label: 'Telefone', emoji: 'telefone' },
+  { value: 'whatsapp', label: 'WhatsApp', emoji: 'whatsapp' },
+  { value: 'email', label: 'Email', emoji: 'email' },
+  { value: 'outros', label: 'Outros', emoji: 'outros' },
 ] as const
 
 export const PRODUCT_TYPES = [

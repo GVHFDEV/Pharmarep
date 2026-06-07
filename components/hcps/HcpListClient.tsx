@@ -11,7 +11,7 @@ import { Select } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 import { SkeletonCard } from '@/components/ui/Skeleton'
 import { useToast } from '@/components/ui/Toast'
-import { Search } from 'lucide-react'
+import { Search, Users } from 'lucide-react'
 
 interface HcpListClientProps {
   refreshKey?: number
@@ -19,17 +19,39 @@ interface HcpListClientProps {
 
 export function HcpListClient({ refreshKey = 0 }: HcpListClientProps) {
   const [hcps, setHcps] = useState<HCP[]>([])
+  const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [search, setSearch] = useState('')
   const [specialty, setSpecialty] = useState('')
   const [potential, setPotential] = useState('')
+  const [city, setCity] = useState('')
+  const [cities, setCities] = useState<string[]>([])
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
   const [selectedHcpId, setSelectedHcpId] = useState<string | null>(null)
   const [showDetail, setShowDetail] = useState(false)
   const [detailRefreshKey, setDetailRefreshKey] = useState(0)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
   const { toast } = useToast()
+
+  // Fetch available cities on mount
+  useEffect(() => {
+    async function fetchCities() {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('hcps')
+        .select('clinic_city')
+        .not('clinic_city', 'is', null)
+        .not('clinic_city', 'eq', '')
+      if (data) {
+        const unique = [...new Set(data.map(d => d.clinic_city).filter(Boolean))] as string[]
+        unique.sort((a, b) => a.localeCompare(b))
+        setCities(unique)
+      }
+    }
+    fetchCities()
+  }, [refreshKey, detailRefreshKey])
 
   const fetchHcps = useCallback(async (reset = false, currentHcps: HCP[] = []) => {
     const supabase = createClient()
@@ -37,19 +59,21 @@ export function HcpListClient({ refreshKey = 0 }: HcpListClientProps) {
 
     let query = supabase
       .from('hcps')
-      .select('*')
-      .eq('active', true)
+      .select('*', { count: 'exact' })
       .order('name')
       .range(offset, offset + ITEMS_PER_PAGE - 1)
 
+    if (statusFilter === 'active') query = query.eq('active', true)
+    if (statusFilter === 'inactive') query = query.eq('active', false)
     if (search) query = query.ilike('name', `%${search}%`)
     if (specialty) query = query.eq('specialty', specialty)
     if (potential) query = query.eq('potential', parseInt(potential))
+    if (city) query = query.eq('clinic_city', city)
 
     if (reset) setLoading(true)
     else setLoadingMore(true)
 
-    const { data, error } = await query
+    const { data, error, count } = await query
 
     if (error) {
       toast.error('Erro ao carregar HCPs. Tente novamente.')
@@ -64,9 +88,13 @@ export function HcpListClient({ refreshKey = 0 }: HcpListClientProps) {
       setHasMore(data.length === ITEMS_PER_PAGE)
     }
 
+    if (reset && count !== null) {
+      setTotalCount(count)
+    }
+
     setLoading(false)
     setLoadingMore(false)
-  }, [search, specialty, potential])
+  }, [search, specialty, potential, statusFilter, city])
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -75,7 +103,7 @@ export function HcpListClient({ refreshKey = 0 }: HcpListClientProps) {
     }, 300)
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, specialty, potential, refreshKey, detailRefreshKey])
+  }, [search, specialty, potential, statusFilter, city, refreshKey, detailRefreshKey])
 
   function handleCardClick(id: string) {
     setSelectedHcpId(id)
@@ -106,6 +134,17 @@ export function HcpListClient({ refreshKey = 0 }: HcpListClientProps) {
     { value: '6', label: 'Potencial 6' },
   ]
 
+  const statusOptions = [
+    { value: 'all', label: 'Todos' },
+    { value: 'active', label: 'Ativos' },
+    { value: 'inactive', label: 'Inativos' },
+  ]
+
+  const cityOptions = [
+    { value: '', label: 'Todas cidades' },
+    ...cities.map((c) => ({ value: c, label: c })),
+  ]
+
   return (
     <>
       <div className="space-y-4">
@@ -121,7 +160,17 @@ export function HcpListClient({ refreshKey = 0 }: HcpListClientProps) {
         <div className="flex flex-col sm:flex-row gap-3">
           <Select options={specialtyOptions} value={specialty} onChange={(e) => setSpecialty(e.target.value)} />
           <Select options={potentialOptions} value={potential} onChange={(e) => setPotential(e.target.value)} />
+          <Select options={statusOptions} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive')} />
+          <Select options={cityOptions} value={city} onChange={(e) => setCity(e.target.value)} />
         </div>
+
+        {/* Count legend */}
+        {!loading && (
+          <div className="flex items-center gap-1.5 text-xs text-text-muted">
+            <Users className="w-3.5 h-3.5" />
+            <span>{totalCount} HCP{totalCount !== 1 ? 's' : ''} encontrado{totalCount !== 1 ? 's' : ''}</span>
+          </div>
+        )}
 
         {/* Grid */}
         {loading ? (

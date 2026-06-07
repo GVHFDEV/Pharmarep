@@ -12,14 +12,16 @@ export default async function DashboardPage() {
   const todayEnd = endOfDay(now).toISOString()
 
   // Fetch all metrics in parallel
-  const [hcpsResult, visitsMonthResult, completedResult, pendingTodayResult] = await Promise.all([
+  const [hcpsResult, inactiveHcpsResult, visitsMonthResult, completedResult, pendingTodayResult] = await Promise.all([
     supabase.from('hcps').select('id', { count: 'exact', head: true }).eq('active', true),
+    supabase.from('hcps').select('id', { count: 'exact', head: true }).eq('active', false),
     supabase.from('visits').select('id', { count: 'exact', head: true }).gte('scheduled_at', monthStart).lte('scheduled_at', monthEnd),
     supabase.from('visits').select('id', { count: 'exact', head: true }).eq('status', 'completed').gte('scheduled_at', monthStart).lte('scheduled_at', monthEnd),
     supabase.from('visits').select('id', { count: 'exact', head: true }).eq('status', 'scheduled').gte('scheduled_at', todayStart).lte('scheduled_at', todayEnd),
   ])
 
   const totalHcps = hcpsResult.count ?? 0
+  const inactiveHcps = inactiveHcpsResult.count ?? 0
   const visitsThisMonth = visitsMonthResult.count ?? 0
   const completedThisMonth = completedResult.count ?? 0
   const pendingToday = pendingTodayResult.count ?? 0
@@ -61,6 +63,7 @@ export default async function DashboardPage() {
       {/* Summary Cards — only plain numbers passed, icons defined inside the client component */}
       <AnimatedDashboardCards
         totalHcps={totalHcps}
+        inactiveHcps={inactiveHcps}
         visitsThisMonth={visitsThisMonth}
         completedThisMonth={completedThisMonth}
         pendingToday={pendingToday}

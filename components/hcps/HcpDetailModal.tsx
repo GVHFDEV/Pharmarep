@@ -237,6 +237,7 @@ export function HcpDetailModal({ hcpId, open, onClose, onUpdated }: HcpDetailMod
     const { error } = await supabase.from('hcps').update({
       name: data.name,
       crm: data.crm,
+      active: data.active !== false,
       cpf: data.cpf || null,
       email: data.email || null,
       mobile_phone: data.mobile_phone || null,
@@ -288,6 +289,7 @@ export function HcpDetailModal({ hcpId, open, onClose, onUpdated }: HcpDetailMod
   const formDefaults = hcp ? {
     name: hcp.name,
     crm: hcp.crm,
+    active: hcp.active,
     cpf: hcp.cpf || '',
     email: hcp.email || '',
     mobile_phone: hcp.mobile_phone || '',
