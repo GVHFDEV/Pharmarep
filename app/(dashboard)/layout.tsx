@@ -3,28 +3,38 @@ import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/layout/Sidebar'
 import BottomNav from '@/components/layout/BottomNav'
 import Header from '@/components/layout/Header'
+import { cache } from 'react'
+
+// Cache user fetch per request — avoids duplicate getUser() calls
+// when proxy already validated the session
+const getUser = cache(async () => {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return user
+})
+
+const getProfile = cache(async (userId: string) => {
+  const supabase = await createClient()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, email, avatar_url')
+    .eq('id', userId)
+    .single()
+  return profile
+})
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     redirect('/login')
   }
 
-  // Fetch user profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, email, avatar_url')
-    .eq('id', user.id)
-    .single()
+  const profile = await getProfile(user.id)
 
   const userProfile = profile ?? {
     full_name: user.email?.split('@')[0] ?? 'User',

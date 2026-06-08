@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useState, useTransition } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Users,
@@ -13,6 +12,8 @@ import {
   Kanban,
   Package,
   Settings,
+  CalendarHeart,
+  ClipboardList,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { BottomSheet } from '@/components/ui/BottomSheet'
@@ -26,6 +27,8 @@ const mainItems = [
 ]
 
 const moreItems = [
+  { href: '/events', label: 'Eventos', icon: CalendarHeart },
+  { href: '/surveys', label: 'Enquetes', icon: ClipboardList },
   { href: '/pipeline', label: 'Pipeline', icon: Kanban },
   { href: '/inventory', label: 'Estoque', icon: Package },
   { href: '/settings', label: 'Configurações', icon: Settings },
@@ -33,7 +36,10 @@ const moreItems = [
 
 export default function BottomNav() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const [showMore, setShowMore] = useState(false)
+  const [pendingHref, setPendingHref] = useState<string | null>(null)
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
@@ -42,29 +48,48 @@ export default function BottomNav() {
 
   const isMoreActive = moreItems.some((item) => isActive(item.href))
 
+  function navigateTo(href: string) {
+    if (pathname === href) return
+    setPendingHref(href)
+    startTransition(() => {
+      router.push(href)
+      setPendingHref(null)
+    })
+  }
+
   return (
     <>
+      {/* Top loading bar */}
+      {isPending && (
+        <div className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-brand-green/20">
+          <div className="h-full bg-brand-green rounded-r-full animate-[progressBar_1.5s_ease-in-out_infinite]" />
+        </div>
+      )}
+
       <nav className="xl:hidden fixed bottom-0 left-0 right-0 z-30 bg-accent shadow-bottom-sheet safe-area-bottom">
         <div className="flex items-center justify-around h-[72px] px-1 max-w-2xl mx-auto">
           {mainItems.map((item) => {
             const active = isActive(item.href)
+            const pending = pendingHref === item.href
             const Icon = item.icon
 
             return (
-              <Link
+              <button
                 key={item.href}
-                href={item.href}
+                type="button"
+                onClick={() => navigateTo(item.href)}
                 className={cn(
                   'relative flex flex-col items-center justify-center gap-1 flex-1 h-full min-w-[56px] text-[11px] font-medium transition-all duration-150 ease-in-out active:scale-95',
-                  active ? 'text-brand-green' : 'text-white/60'
+                  active ? 'text-brand-green' : 'text-white/60',
+                  pending && 'text-brand-green/80'
                 )}
               >
                 {active && (
                   <span className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[3px] bg-brand-green rounded-full" />
                 )}
-                <Icon className="w-6 h-6" />
+                <Icon className={cn('w-6 h-6', pending && 'animate-pulse')} />
                 <span className="truncate">{item.label}</span>
-              </Link>
+              </button>
             )
           })}
 
@@ -91,23 +116,28 @@ export default function BottomNav() {
         <div className="space-y-1">
           {moreItems.map((item) => {
             const active = isActive(item.href)
+            const pending = pendingHref === item.href
             const Icon = item.icon
 
             return (
-              <Link
+              <button
                 key={item.href}
-                href={item.href}
-                onClick={() => setShowMore(false)}
+                type="button"
+                onClick={() => {
+                  setShowMore(false)
+                  navigateTo(item.href)
+                }}
                 className={cn(
-                  'flex items-center gap-4 px-4 py-4 rounded-xl text-base font-medium transition-all duration-150 ease-in-out active:scale-[0.98]',
+                  'flex items-center gap-4 px-4 py-4 rounded-xl text-base font-medium transition-all duration-150 ease-in-out active:scale-[0.98] w-full text-left',
                   active
                     ? 'text-accent bg-accent-light'
-                    : 'text-text-primary hover:bg-surface-2 active:bg-surface-2'
+                    : 'text-text-primary hover:bg-surface-2 active:bg-surface-2',
+                  pending && 'opacity-70'
                 )}
               >
-                <Icon className="w-6 h-6" />
+                <Icon className={cn('w-6 h-6', pending && 'animate-pulse')} />
                 <span>{item.label}</span>
-              </Link>
+              </button>
             )
           })}
         </div>

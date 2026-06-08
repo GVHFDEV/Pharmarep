@@ -12,6 +12,7 @@ export const hcpSchema = z.object({
   email: z.string().email('Email inválido').optional().or(z.literal('')),
   mobile_phone: z.string().optional().or(z.literal('')),
   landline_phone: z.string().optional().or(z.literal('')),
+  birth_date: z.string().optional().or(z.literal('')),
   specialty: z.string().min(1, 'Especialidade é obrigatória'),
   category: z.string().optional().or(z.literal('')),
   potential: z.string().optional().or(z.literal('')),

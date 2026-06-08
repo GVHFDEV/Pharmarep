@@ -18,6 +18,7 @@ export interface HCP {
   email: string | null;
   mobile_phone: string | null;
   landline_phone: string | null;
+  birth_date: string | null;
   specialty: string;
   category: string | null;
   potential: 1 | 2 | 3 | 4 | 5 | 6 | null;

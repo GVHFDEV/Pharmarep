@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from 'react'
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, CartesianGrid,
@@ -48,6 +49,9 @@ function SectionCard({ children, className }: { children: React.ReactNode; class
 }
 
 export function DashboardCharts({ recentVisits, hcpPotentials, hcpSpecialties, topHcps, topProducts }: DashboardChartsProps) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
   const now = new Date()
 
   // Weekly visits for area chart
@@ -110,6 +114,21 @@ export function DashboardCharts({ recentVisits, hcpPotentials, hcpSpecialties, t
   // Total visits for the area chart header
   const totalVisits = weeklyData.reduce((s, w) => s + w.total, 0)
   const completedVisits = weeklyData.reduce((s, w) => s + w.concluídas, 0)
+
+  if (!mounted) {
+    return (
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div className="xl:col-span-2 flex flex-col gap-4">
+          <div className="bg-surface border border-border rounded-2xl p-5 shadow-sm h-64 animate-pulse" />
+          <div className="bg-surface border border-border rounded-2xl p-5 shadow-sm h-48 animate-pulse" />
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="bg-surface border border-border rounded-2xl p-5 shadow-sm h-48 animate-pulse" />
+          <div className="bg-surface border border-border rounded-2xl p-5 shadow-sm h-48 animate-pulse" />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
@@ -248,7 +267,7 @@ export function DashboardCharts({ recentVisits, hcpPotentials, hcpSpecialties, t
         <SectionCard>
           <div className="flex items-center gap-2 mb-4">
             <Users className="w-4 h-4 text-accent" />
-            <p className="text-sm font-semibold text-text-primary">Distribuição HCPs</p>
+            <p className="text-sm font-semibold text-text-primary">HCPs por Potencial</p>
           </div>
           {potentialData.length === 0 ? (
             <p className="text-sm text-text-muted text-center py-8">Nenhum HCP com potencial definido</p>
@@ -317,7 +336,7 @@ export function DashboardCharts({ recentVisits, hcpPotentials, hcpSpecialties, t
         <SectionCard>
           <div className="flex items-center gap-2 mb-4">
             <Package className="w-4 h-4 text-accent" />
-            <p className="text-sm font-semibold text-text-primary">Produtos Propagados</p>
+            <p className="text-sm font-semibold text-text-primary">Produtos Promovidos</p>
           </div>
           {topProductList.length === 0 ? (
             <p className="text-sm text-text-muted text-center py-4">Nenhum produto registrado</p>

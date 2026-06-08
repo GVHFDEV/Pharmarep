@@ -35,6 +35,7 @@ export function HcpForm({ defaultValues, onSubmit, loading }: HcpFormProps) {
       email: '',
       mobile_phone: '',
       landline_phone: '',
+      birth_date: '',
       specialty: '',
       category: '',
       potential: '',
@@ -107,32 +108,31 @@ export function HcpForm({ defaultValues, onSubmit, loading }: HcpFormProps) {
           <Input label="CPF" id="cpf" value={cpfValue ? formatCPF(cpfValue) : ''} onChange={handleCPFChange} error={errors.cpf?.message} disabled={loading} placeholder="000.000.000-00" />
           <Input label="Email" id="email" type="email" error={errors.email?.message} disabled={loading} {...register('email')} />
           <Input label="Celular" id="mobile_phone" value={mobileValue ? formatPhone(mobileValue) : ''} onChange={handlePhoneChange('mobile_phone')} error={errors.mobile_phone?.message} disabled={loading} placeholder="(00) 00000-0000" />
+          <Input label="Data de Nascimento" id="birth_date" type="date" disabled={loading} {...register('birth_date')} />
           <Input label="Tel. Fixo" id="landline_phone" value={landlineValue ? formatPhone(landlineValue) : ''} onChange={handlePhoneChange('landline_phone')} error={errors.landline_phone?.message} disabled={loading} placeholder="(00) 0000-0000" />
+          {/* Status toggle inline */}
+          <div className="flex items-center justify-between rounded-xl border border-border bg-surface px-3 py-2">
+            <div>
+              <p className="text-xs font-medium text-text-primary">Status</p>
+              <p className="text-[10px] text-text-muted">{activeValue !== false ? 'Ativo' : 'Inativo'}</p>
+            </div>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => setValue('active', !activeValue)}
+              className={cn(
+                'relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50',
+                activeValue !== false ? 'bg-accent' : 'bg-gray-300'
+              )}
+            >
+              <span className={cn(
+                'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200',
+                activeValue !== false ? 'translate-x-5' : 'translate-x-0'
+              )} />
+            </button>
+          </div>
         </div>
       </div>
-
-      {/* ── Status toggle ── */}
-      <div className="flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-3">
-        <div>
-          <p className="text-sm font-medium text-text-primary">Status</p>
-          <p className="text-xs text-text-muted">{activeValue !== false ? 'Ativo' : 'Inativo'}</p>
-        </div>
-        <button
-          type="button"
-          disabled={loading}
-          onClick={() => setValue('active', !activeValue)}
-          className={cn(
-            'relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50',
-            activeValue !== false ? 'bg-accent' : 'bg-gray-300'
-          )}
-        >
-          <span className={cn(
-            'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200',
-            activeValue !== false ? 'translate-x-5' : 'translate-x-0'
-          )} />
-        </button>
-      </div>
-
       {/* ── Professional ── */}
       <div>
         <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Informações profissionais</p>

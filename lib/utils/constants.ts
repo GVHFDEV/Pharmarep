@@ -91,4 +91,19 @@ export const PRODUCT_TYPES = [
   { value: 'material', label: 'Material Promocional' },
 ] as const
 
+export const EVENT_TYPES = [
+  { value: 'palestra', label: 'Palestra' },
+  { value: 'jantar', label: 'Jantar' },
+  { value: 'simposio', label: 'Simpósio' },
+  { value: 'congresso', label: 'Congresso' },
+  { value: 'workshop', label: 'Workshop' },
+  { value: 'outro', label: 'Outro' },
+] as const
+
+export const EVENT_STATUSES = [
+  { value: 'scheduled', label: 'Agendado' },
+  { value: 'completed', label: 'Realizado' },
+  { value: 'cancelled', label: 'Cancelado' },
+] as const
+
 export const ITEMS_PER_PAGE = 20

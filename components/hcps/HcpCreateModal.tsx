@@ -40,6 +40,7 @@ export function HcpCreateModal({ open, onClose, onCreated }: HcpCreateModalProps
       email: data.email || null,
       mobile_phone: data.mobile_phone || null,
       landline_phone: data.landline_phone || null,
+      birth_date: data.birth_date || null,
       specialty: data.specialty,
       category: data.category || null,
       potential: data.potential ? parseInt(data.potential) : null,

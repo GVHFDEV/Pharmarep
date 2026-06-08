@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Users, Calendar, CheckCircle, Clock, TrendingUp } from 'lucide-react'
+import { Users, Calendar, CheckCircle, Clock, TrendingUp, CalendarHeart } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
 export interface DashboardCardValues {
@@ -10,6 +10,7 @@ export interface DashboardCardValues {
   visitsThisMonth: number
   completedThisMonth: number
   pendingToday: number
+  eventsThisMonth: number
 }
 
 // Icons and metadata defined here — NOT passed from Server Component
@@ -19,13 +20,20 @@ const CARDS = [
     label: 'HCPs Ativos',
     sub: 'Total ativos',
     icon: Users,
-    accent: true,   // dark green card
+    accent: true,
   },
   {
     key: 'inactiveHcps' as const,
     label: 'HCPs Inativos',
     sub: 'Total inativos',
     icon: Users,
+    accent: false,
+  },
+  {
+    key: 'eventsThisMonth' as const,
+    label: 'Eventos no Mês',
+    sub: 'Palestras, jantares...',
+    icon: CalendarHeart,
     accent: false,
   },
   {
@@ -57,11 +65,12 @@ export function AnimatedDashboardCards({
   visitsThisMonth,
   completedThisMonth,
   pendingToday,
+  eventsThisMonth,
 }: DashboardCardValues) {
-  const values = { totalHcps, inactiveHcps, visitsThisMonth, completedThisMonth, pendingToday }
+  const values = { totalHcps, inactiveHcps, visitsThisMonth, completedThisMonth, pendingToday, eventsThisMonth }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
       {CARDS.map((card, i) => {
         const Icon = card.icon
         const value = values[card.key]

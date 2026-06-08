@@ -92,6 +92,7 @@ function HcpDetailContent({
           {hcp.cpf && <InfoRow icon={<User className="w-4 h-4" />} label="CPF" value={formatCPF(hcp.cpf)} />}
           {hcp.email && <InfoRow icon={<Mail className="w-4 h-4" />} label="Email" value={hcp.email} />}
           {hcp.mobile_phone && <InfoRow icon={<Phone className="w-4 h-4" />} label="Celular" value={formatPhone(hcp.mobile_phone)} />}
+          {hcp.birth_date && <InfoRow icon={<Calendar className="w-4 h-4" />} label="Nasc." value={formatDate(hcp.birth_date)} />}
           {hcp.landline_phone && <InfoRow icon={<Phone className="w-4 h-4" />} label="Fixo" value={formatPhone(hcp.landline_phone)} />}
         </div>
       </div>
@@ -242,6 +243,7 @@ export function HcpDetailModal({ hcpId, open, onClose, onUpdated }: HcpDetailMod
       email: data.email || null,
       mobile_phone: data.mobile_phone || null,
       landline_phone: data.landline_phone || null,
+      birth_date: data.birth_date || null,
       specialty: data.specialty,
       category: data.category || null,
       potential: data.potential ? parseInt(data.potential) : null,
@@ -294,6 +296,7 @@ export function HcpDetailModal({ hcpId, open, onClose, onUpdated }: HcpDetailMod
     email: hcp.email || '',
     mobile_phone: hcp.mobile_phone || '',
     landline_phone: hcp.landline_phone || '',
+    birth_date: hcp.birth_date || '',
     specialty: hcp.specialty,
     category: hcp.category || '',
     potential: hcp.potential?.toString() || '',
